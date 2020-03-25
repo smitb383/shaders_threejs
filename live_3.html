@@ -20,19 +20,17 @@
     <canvas id="myCanvas"></canvas>
     <script src="three.js"></script>
 
-    <!-- vertex shader -->
     <script type="x-shader/x-vertex" id="vertexShader">
-        void main(){
-        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_Position = projectionMatrix * modelViewPosition;
-        }
-    </script>
-    <!--fragment shader -->
+        void main() 
+{
+	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+	gl_Position = projectionMatrix * modelViewPosition;
+}
+</script>
     <script type="x-shader/x-fragment" id="fragmentShader">
-        void main(){
-        <!-- //returns color for each pixel in fragment  -->
-        gl_FragColor = cev4(1.0, 0.0, 0.0, 1.0); 
-        }
+        void main() {
+	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
 </script>
 
     <script>
@@ -62,11 +60,16 @@
         var pointLight = new THREE.PointLight(0xffffff, 0.5);
         scene.add(pointLight);
 
+        //SHADER MATERIAL
+        var shaderMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.getElementById('vertexShader').textContent,
+            fragmentShader: document.getElementById('fragmentShader').textContent
+        });
 
         //BASIC CUBE 
         var boxGeometry = new THREE.BoxBufferGeometry(150, 100, 100, 50, 50, 50);
-        var boxMaterial = new THREE.MeshStandardMaterial();
-        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        // var boxMaterial = new THREE.MeshStandardMaterial();
+        var box = new THREE.Mesh(boxGeometry, shaderMaterial);
         box.position.z = -1000;
         box.position.x = -200;
         scene.add(box);
