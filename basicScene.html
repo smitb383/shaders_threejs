@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brooke three.js+shaders_trial1</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas"></canvas>
+
+    <script src="three.js"></script>
+
+    <script>
+        var renderer,
+            scene,
+            camera,
+            myCanvas = document.getElementById('myCanvas');
+
+        //RENDERER
+        renderer = new THREE.WebGLRenderer({
+            canvas: myCanvas,
+            antialias: true
+        });
+
+        renderer.setClearColor(0xffffff);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        //SCENE
+        var scene = new THREE.Scene();
+        //CAMERA
+        camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 100, 10000);
+
+        // LIGHT
+        var light = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(light);
+
+        //BASIC CUBE 
+        var geometry = new THREE.BoxBufferGeometry(150, 100, 100, 50, 50, 50);
+        var material = new THREE.MeshBasicMaterial({
+            color: 0x00ff00
+        });
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.position.z = -1000;
+        mesh.position.x = -100;
+        scene.add(mesh);
+
+        function render() {
+            renderer.render(scene, camera);
+        }
+
+        render();
+    </script>
+
+</body>
+
+</html>
