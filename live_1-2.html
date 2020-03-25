@@ -20,6 +20,21 @@
     <canvas id="myCanvas"></canvas>
     <script src="three.js"></script>
 
+    <!-- vertex shader -->
+    <script type="x-shader/x-vertex" id="vertexShader">
+        void main(){
+        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * modelViewPosition;
+        }
+    </script>
+    <!--fragment shader -->
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        void main(){
+        <!-- //returns color for each pixel in fragment  -->
+        gl_FragColor = cev4(1.0, 0.0, 0.0, 1.0); 
+        }
+</script>
+
     <script>
         var renderer,
             scene,
