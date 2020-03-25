@@ -90,6 +90,8 @@
         // spotlight.add(light);
 
         function render() {
+            requestAnimationFrame(render);
+            box.rotation.x += 0.01;
             renderer.render(scene, camera);
         }
 
