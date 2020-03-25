@@ -1,4 +1,4 @@
-<!-- custom materila shader red, basic -->
+<!-- basic janky vertex displacement-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,15 +22,34 @@
     <script src="three.js"></script>
 
     <script type="x-shader/x-vertex" id="vertexShader">
+        attribute float vertexDisplacement; 
+        uniform float delta;  
+        varying float vOpacity; 
+        varying vec3 vUv; 
         void main() 
 {
-	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+    vUv = position; 
+    vOpacity = vertexDisplacement; 
+
+    vec3 p =position; 
+
+    p.x += sin(vertexDisplacement) *50.0; 
+
+	vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
 	gl_Position = projectionMatrix * modelViewPosition;
 }
 </script>
     <script type="x-shader/x-fragment" id="fragmentShader">
+        uniform float delta; 
+    varying float vOpacity;
+    varying vec3 vUv;
+
         void main() {
-	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+            float r = 1.0 + cos(vUv.x * delta); 
+            float g = 0.0; 
+            float b = 0.0; 
+            
+	    gl_FragColor = vec4(r, g, b, vOpacity);
 }
 </script>
 
@@ -61,8 +80,15 @@
         var pointLight = new THREE.PointLight(0xffffff, 0.5);
         scene.add(pointLight);
 
+        //UNIFORMS
+        var uniforms = {
+            delta: {
+                value: 0
+            }
+        }
         //SHADER MATERIAL
         var shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: uniforms,
             vertexShader: document.getElementById('vertexShader').textContent,
             fragmentShader: document.getElementById('fragmentShader').textContent
         });
@@ -90,10 +116,16 @@
         ground.position.y = -100;
         scene.add(ground);
 
+        //VERTEX DISPLACMENT ATTRIBUTE
+        var vertexDisplacement = new Float32Array(boxGeometry.attributes.position.count);
+        for (var i = 0; i < vertexDisplacement.length; i++) {
+            vertexDisplacement[i] = Math.sin(i);
+        }
+        boxGeometry.setAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
 
         function render() {
             requestAnimationFrame(render);
-            box.rotation.x += 0.01;
+            // box.rotation.x += 0.01;
             renderer.render(scene, camera);
         }
 
