@@ -51,10 +51,10 @@
         var material = new THREE.MeshBasicMaterial({
             color: 0x00ff00
         });
-        var mesh = new THREE.Mesh(geometry, material);
-        mesh.position.z = -1000;
-        mesh.position.x = -100;
-        scene.add(mesh);
+        var box = new THREE.Mesh(geometry, material);
+        box.position.z = -1000;
+        box.position.x = -100;
+        scene.add(box);
 
         function render() {
             renderer.render(scene, camera);
