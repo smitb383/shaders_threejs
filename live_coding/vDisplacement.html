@@ -1,0 +1,137 @@
+<!-- basic janky vertex displacement-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Vertex Displacment</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas"></canvas>
+    <script src="/three.js"></script>
+
+    <script type="x-shader/x-vertex" id="vertexShader">
+        attribute float vertexDisplacement; 
+        uniform float step;  
+        varying float vOpacity; 
+        varying vec3 vUv; 
+        void main() 
+{
+    vUv = position; 
+    vOpacity = vertexDisplacement; 
+
+    vec3 p =position; 
+
+    p.x += sin(vertexDisplacement) *50.0; 
+
+	vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
+	gl_Position = projectionMatrix * modelViewPosition;
+}
+</script>
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        uniform float step;
+    varying float vOpacity;
+    varying vec3 vUv;
+
+        void main() {
+            float r = 1.0 + cos(vUv.x * step);
+            float g = 0.0; 
+            float b = 0.0; 
+            
+	    gl_FragColor = vec4(r, g, b, vOpacity);
+}
+</script>
+
+    <script>
+        var renderer,
+            scene,
+            camera,
+            myCanvas = document.getElementById('myCanvas');
+
+        //RENDERER
+        renderer = new THREE.WebGLRenderer({
+            canvas: myCanvas,
+            antialias: true
+        });
+        // renderer.setClearColor(0xffffff);
+        renderer.setClearColor(0x333333);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        //SCENE
+        scene = new THREE.Scene();
+        //CAMERA
+        camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 100, 10000);
+
+        // LIGHT
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        var pointLight = new THREE.PointLight(0xffffff, 0.5);
+        scene.add(pointLight);
+
+        //UNIFORMS
+        var uniforms = {
+            step: {
+                value: 1
+            }
+        }
+        //SHADER MATERIAL
+        var shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: document.getElementById('vertexShader').textContent,
+            fragmentShader: document.getElementById('fragmentShader').textContent
+        });
+
+        //BASIC CUBE 
+        var boxGeometry = new THREE.BoxBufferGeometry(150, 100, 100, 50, 50, 50);
+        // var boxMaterial = new THREE.MeshStandardMaterial();
+        var box = new THREE.Mesh(boxGeometry, shaderMaterial);
+        box.position.z = -1000;
+        box.position.x = -200;
+        scene.add(box);
+
+        //BASIC SPHERE
+        var sphereGeometry = new THREE.SphereBufferGeometry(50, 20, 20);
+        var sphereMaterial = new THREE.MeshStandardMaterial();
+        var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        sphere.position.z = -1000;
+        scene.add(sphere);
+
+        //GROUND PLANE 
+        var planeGeometry = new THREE.PlaneGeometry(10000, 10000, 100, 100);
+        var planeMaterial = new THREE.MeshStandardMaterial();
+        var ground = new THREE.Mesh(planeGeometry, planeMaterial);
+        ground.rotation.x = -90 * (Math.PI / 180);
+        ground.position.y = -100;
+        scene.add(ground);
+
+        //VERTEX DISPLACMENT ATTRIBUTE
+        var vertexDisplacement = new Float32Array(boxGeometry.attributes.position.count);
+        for (var i = 0; i < vertexDisplacement.length; i++) {
+            vertexDisplacement[i] = Math.sin(i);
+        }
+        boxGeometry.setAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
+
+        function render() {
+            requestAnimationFrame(render);
+            // box.rotation.x += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        render();
+    </script>
+
+</body>
+
+</html>

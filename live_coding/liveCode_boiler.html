@@ -1,11 +1,10 @@
-<!-- basic janky vertex displacement-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brooke three.js+shaders_trial1</title>
+    <title>BoilerPlate three.js + shaders</title>
     <style>
         body {
             margin: 0;
@@ -19,39 +18,7 @@
 
 <body>
     <canvas id="myCanvas"></canvas>
-    <script src="three.js"></script>
-
-    <script type="x-shader/x-vertex" id="vertexShader">
-        attribute float vertexDisplacement; 
-        uniform float delta;  
-        varying float vOpacity; 
-        varying vec3 vUv; 
-        void main() 
-{
-    vUv = position; 
-    vOpacity = vertexDisplacement; 
-
-    vec3 p =position; 
-
-    p.x += sin(vertexDisplacement) *50.0; 
-
-	vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
-	gl_Position = projectionMatrix * modelViewPosition;
-}
-</script>
-    <script type="x-shader/x-fragment" id="fragmentShader">
-        uniform float delta; 
-    varying float vOpacity;
-    varying vec3 vUv;
-
-        void main() {
-            float r = 1.0 + cos(vUv.x * delta); 
-            float g = 0.0; 
-            float b = 0.0; 
-            
-	    gl_FragColor = vec4(r, g, b, vOpacity);
-}
-</script>
+    <script src="/three.js"></script>
 
     <script>
         var renderer,
@@ -64,7 +31,6 @@
             canvas: myCanvas,
             antialias: true
         });
-        // renderer.setClearColor(0xffffff);
         renderer.setClearColor(0x333333);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -80,23 +46,11 @@
         var pointLight = new THREE.PointLight(0xffffff, 0.5);
         scene.add(pointLight);
 
-        //UNIFORMS
-        var uniforms = {
-            delta: {
-                value: 0
-            }
-        }
-        //SHADER MATERIAL
-        var shaderMaterial = new THREE.ShaderMaterial({
-            uniforms: uniforms,
-            vertexShader: document.getElementById('vertexShader').textContent,
-            fragmentShader: document.getElementById('fragmentShader').textContent
-        });
 
         //BASIC CUBE 
         var boxGeometry = new THREE.BoxBufferGeometry(150, 100, 100, 50, 50, 50);
-        // var boxMaterial = new THREE.MeshStandardMaterial();
-        var box = new THREE.Mesh(boxGeometry, shaderMaterial);
+        var boxMaterial = new THREE.MeshStandardMaterial();
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
         box.position.z = -1000;
         box.position.x = -200;
         scene.add(box);
@@ -104,6 +58,7 @@
         //BASIC SPHERE
         var sphereGeometry = new THREE.SphereBufferGeometry(50, 20, 20);
         var sphereMaterial = new THREE.MeshStandardMaterial();
+
         var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphere.position.z = -1000;
         scene.add(sphere);
@@ -116,16 +71,9 @@
         ground.position.y = -100;
         scene.add(ground);
 
-        //VERTEX DISPLACMENT ATTRIBUTE
-        var vertexDisplacement = new Float32Array(boxGeometry.attributes.position.count);
-        for (var i = 0; i < vertexDisplacement.length; i++) {
-            vertexDisplacement[i] = Math.sin(i);
-        }
-        boxGeometry.setAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
-
         function render() {
             requestAnimationFrame(render);
-            // box.rotation.x += 0.01;
+            box.rotation.x += 0.01;
             renderer.render(scene, camera);
         }
 
