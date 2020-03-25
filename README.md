@@ -10,3 +10,6 @@ Order of tutorial progression:
 2. shaders basic
 3. vDisplacement
 4. displacement animation
+
+for tutorial explanations:
+https://www.notion.so/Lesson-389dad96764d4a708bf15df33fa9e16c
