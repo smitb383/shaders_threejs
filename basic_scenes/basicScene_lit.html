@@ -50,8 +50,9 @@
 
         //BASIC CUBE 
         var boxGeometry = new THREE.BoxBufferGeometry(150, 100, 100, 50, 50, 50);
-        var boxMaterial = new THREE.MeshStandardMaterial();
+        var boxMaterial = new THREE.MeshStandardMaterial({color: 0x00ff00});
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
+
         box.position.z = -1000;
         box.position.x = -200;
         scene.add(box);
@@ -59,13 +60,8 @@
         //BASIC SPHERE
         var sphereGeometry = new THREE.SphereBufferGeometry(50, 20, 20);
         var sphereMaterial = new THREE.MeshStandardMaterial();
-        // var sphereMaterial = new THREE.MeshBasicMaterial({
-        //     color: 0x00ff00
-        // });
-        // var sphereMaterial = new THREE.MeshLambertMaterial();
-        // var sphereMaterial = new THREE.MeshPhysicalMaterial();
-
         var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
         sphere.position.z = -1000;
         scene.add(sphere);
 
@@ -73,21 +69,22 @@
         var planeGeometry = new THREE.PlaneGeometry(10000, 10000, 100, 100);
         var planeMaterial = new THREE.MeshStandardMaterial();
         var ground = new THREE.Mesh(planeGeometry, planeMaterial);
+
         ground.rotation.x = -90 * (Math.PI / 180);
         ground.position.y = -100;
         scene.add(ground);
 
         // // TARGET LIGHTS
         // // SUN LIGHT (DIRECTIONAL LIGHT)
-        // var sunlight = new THREE.DirectionalLight(0xffffff, .1, 1000);
-        // sunlight.target = box;
-        // scene.add(sunlight);
+        var sunlight = new THREE.DirectionalLight(0xffffff, .1, 1000);
+        sunlight.target = box;
+        scene.add(sunlight);
 
         // // SPOTLIGHT(CONE POINT LIGHT)
         // // colors defined are coming from the top of bottom 
-        // var spotlight = new THREE.SpotLight(0xffffff, 2.0, 1000);
-        // spotlight.target = box;
-        // spotlight.add(light);
+        var spotlight = new THREE.SpotLight(0xffffff, 2.0, 1000);
+        spotlight.target = box;
+        scene.add(spotlight);
 
         function render() {
             requestAnimationFrame(render);

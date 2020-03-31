@@ -33,7 +33,7 @@
 
     vec3 p =position; 
 
-    p.x += sin(vertexDisplacement) *50.0; 
+    p.x += sin(vertexDisplacement/50.0) * 50.0; 
 
 	vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
 	gl_Position = projectionMatrix * modelViewPosition;
@@ -45,9 +45,9 @@
     varying vec3 vUv;
 
         void main() {
-            float r = 1.0 + cos(vUv.x * step);
-            float g = 0.0; 
-            float b = 0.0; 
+            float r = 1.0 - cos(vUv.x * step);
+            float g = 1.0 - cos(vUv.x * step); 
+            float b = 1.0 - cos(vUv.x * step); 
             
 	    gl_FragColor = vec4(r, g, b, vOpacity);
 }
