@@ -23,19 +23,20 @@
 
     <script type="x-shader/x-vertex" id="vertexShader">
         attribute float vertexDisplacement; 
-        uniform float step;  
-        varying float vOpacity; 
-        varying vec3 vUv; 
+        uniform float step;
+        varying float vOpacity;
+        varying vec3 vUv;
         void main() {
-            vUv = position; 
-            vOpacity = vertexDisplacement; 
-            vec3 p =position; 
+        vUv = position;
+        vUv = position2;
+        vOpacity = vertexDisplacement;
+        vec3 p =position;
 
-            p.x += sin(vertexDisplacement/50.0) *50.0; 
-            vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
-            gl_Position = projectionMatrix * modelViewPosition;
+        p.x += sin(vertexDisplacement/50.0) *50.0;
+        vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * modelViewPosition;
         }
-</script>
+    </script>
     <script type="x-shader/x-fragment" id="fragmentShader">
         uniform float step;
         varying float vOpacity;
@@ -120,6 +121,7 @@
         }
         boxGeometry.setAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
 
+        // var step = 0;
         var step = 0;
 
         function render() {

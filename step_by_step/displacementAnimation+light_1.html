@@ -30,12 +30,11 @@
             vUv = position; 
             vOpacity = vertexDisplacement; 
             vec3 p =position; 
-
-            p.x += sin(vertexDisplacement/50.0) *70.0; 
+            p.x += sin(vertexDisplacement/50.0) *70.0;
             p.y += sin(vertexDisplacement/50.0) *70.0;
              p.z += sin(vertexDisplacement/50.0) *70.0;
             vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
-            gl_Position = projectionMatrix * modelViewPosition;
+             gl_Position = projectionMatrix * modelViewPosition;
         }
 </script>
     <script type="x-shader/x-fragment" id="fragmentShader">
