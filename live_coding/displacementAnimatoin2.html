@@ -1,11 +1,11 @@
-<!--vertex shader displacement animation-->
+<!-- basic janky vertex displacement-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Fragment Shader</title>
+    <title>Basic Vertex Displacment</title>
     <style>
         body {
             margin: 0;
@@ -26,28 +26,31 @@
         uniform float step;  
         varying float vOpacity; 
         varying vec3 vUv; 
-        void main() {
-            vUv = position; 
-            vOpacity = vertexDisplacement; 
-            vec3 p =position; 
+        void main() 
+{
+    vUv = position; 
+    vOpacity = vertexDisplacement; 
 
-            p.x += sin(vertexDisplacement/50.0) *50.0; 
-            vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
-            gl_Position = projectionMatrix * modelViewPosition;
-        }
+    vec3 p =position; 
+
+    p.x += sin(vertexDisplacement/50.0) * 50.0; 
+
+	vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
+	gl_Position = projectionMatrix * modelViewPosition;
+}
 </script>
     <script type="x-shader/x-fragment" id="fragmentShader">
         uniform float step;
-        varying float vOpacity;
-        varying vec3 vUv;
+    varying float vOpacity;
+    varying vec3 vUv;
 
         void main() {
-            float r = 1.0 - cos(vUv.x + step);
-            float g = 1.0 - cos(vUv.x + step); 
-            float b = 1.0 - cos(vUv.x + step); 
+            float r = 1.0 - cos(vUv.x * step);
+            float g = 1.0 - cos(vUv.x * step); 
+            float b = 1.0 - cos(vUv.x * step); 
             
-	        gl_FragColor = vec4(r, g, b, vOpacity);
-        }
+	    gl_FragColor = vec4(r, g, b, vOpacity);
+}
 </script>
 
     <script>
@@ -120,21 +123,9 @@
         }
         boxGeometry.setAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
 
-        var step = 0;
-
         function render() {
-
-            box.rotation.x += 0.01;
-
-            step += 0.0001;
-            // box.material.uniforms.step.value = 0.5 + Math.sin(step);
-            for (var i = 0; i < vertexDisplacement.length; i++) {
-                vertexDisplacement[i] = .5 + Math.sin(i * step);
-            }
-
-            box.geometry.attributes.vertexDisplacement.needsUpdate = true;
-
             requestAnimationFrame(render);
+            box.rotation.x += 0.01;
             renderer.render(scene, camera);
         }
 
