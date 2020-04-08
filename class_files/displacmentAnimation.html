@@ -27,14 +27,13 @@
         varying float vOpacity;
         varying vec3 vUv;
         void main() {
-        vUv = position;
-        vUv = position2;
-        vOpacity = vertexDisplacement;
-        vec3 p =position;
+            vUv = position; 
+            vOpacity = vertexDisplacement; 
+            vec3 p =position; 
 
-        p.x += sin(vertexDisplacement/50.0) *50.0;
-        vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
-        gl_Position = projectionMatrix * modelViewPosition;
+            p.x += sin(vertexDisplacement/50.0) * 100.0;
+            vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
+            gl_Position = projectionMatrix * modelViewPosition;
         }
     </script>
     <script type="x-shader/x-fragment" id="fragmentShader">
@@ -125,15 +124,13 @@
         var step = 0;
 
         function render() {
-
             box.rotation.x += 0.01;
 
-            step += 0.0001;
+            step += 0.1;
             // box.material.uniforms.step.value = 0.5 + Math.sin(step);
             for (var i = 0; i < vertexDisplacement.length; i++) {
                 vertexDisplacement[i] = .5 + Math.sin(i * step);
             }
-
             box.geometry.attributes.vertexDisplacement.needsUpdate = true;
 
             requestAnimationFrame(render);
