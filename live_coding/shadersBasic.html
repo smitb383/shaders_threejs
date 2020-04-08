@@ -1,7 +1,5 @@
-<!-- custom material shader red,-->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +8,6 @@
         body {
             margin: 0;
         }
-
         canvas {
             display: block;
         }
@@ -21,19 +18,55 @@
     <canvas id="myCanvas"></canvas>
     <script src="/three.js"></script>
 
+<!-- Shaders -->
+
+<!-- Basic Vertex and Fragment Shaders -->
     <script type="x-shader/x-vertex" id="vertexShader">
-        void main() 
-{
-	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-	gl_Position = projectionMatrix * modelViewPosition;
-}
-</script>
+        void main() {
+	        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+	        gl_Position = projectionMatrix * modelViewPosition;
+        }
+    </script>
+
     <script type="x-shader/x-fragment" id="fragmentShader">
         void main() {
-	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-}
-</script>
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    </script>
 
+<!-- Vertex Shader (Displacement) and Fragment Shader (Communicating with Vertex Shader) -->
+    <!-- <script type="x-shader/x-vertex" id="vertexShader">
+        attribute float vertexDisplacement; 
+        uniform float step;  
+        varying float vOpacity; 
+        varying vec3 vUv; 
+        void main() {
+            vUv = position; 
+            vOpacity = vertexDisplacement; 
+            vec3 p =position; 
+
+            p.x += sin(vertexDisplacement/50.0) * 50.0; 
+            vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
+            gl_Position = projectionMatrix * modelViewPosition;
+        }
+    </script> -->
+
+    <!-- <script type="x-shader/x-fragment" id="fragmentShader">
+        uniform float step;
+        varying float vOpacity;
+        varying vec3 vUv;
+
+        void main() {
+            float r = 1.0 - cos(vUv.x * step);
+            float g = 1.0 - cos(vUv.x * step); 
+            float b = 1.0 - cos(vUv.x * step); 
+            
+            gl_FragColor = vec4(r, g, b, vOpacity);
+        }
+    </script> -->
+
+
+<!-- Three.js -->
     <script>
         var renderer,
             scene,
@@ -61,8 +94,17 @@
         var pointLight = new THREE.PointLight(0xffffff, 0.5);
         scene.add(pointLight);
 
+        //Vertex Displacement
+        //UNIFORMS
+        // var uniforms = {
+        //     step: {
+        //         value: 1
+        //     }
+        // }
+
         //SHADER MATERIAL
         var shaderMaterial = new THREE.ShaderMaterial({
+            // uniforms: uniforms, //Vertex Displacement
             vertexShader: document.getElementById('vertexShader').textContent,
             fragmentShader: document.getElementById('fragmentShader').textContent
         });
@@ -90,10 +132,28 @@
         ground.position.y = -100;
         scene.add(ground);
 
+        //Vertex Displacement
+        // var vertexDisplacement = new Float32Array(boxGeometry.attributes.position.count);
+        // for (var i = 0; i < vertexDisplacement.length; i++) {
+        //     vertexDisplacement[i] = Math.sin(i);
+        // }
+        // boxGeometry.setAttribute('vertexDisplacement', new THREE.BufferAttribute(vertexDisplacement, 1));
+
+        //Vertex Displacement Animation
+        // var step = 0;
 
         function render() {
-            requestAnimationFrame(render);
             box.rotation.x += 0.01;
+
+        //Vertex Displacement Animation
+            // step += 0.0001;
+            // // box.material.uniforms.step.value = 0.5 + Math.sin(step);
+            // for (var i = 0; i < vertexDisplacement.length; i++) {
+            //     vertexDisplacement[i] = .5 + Math.sin(i * step);
+            // }
+            // box.geometry.attributes.vertexDisplacement.needsUpdate = true;
+
+            requestAnimationFrame(render);
             renderer.render(scene, camera);
         }
 
