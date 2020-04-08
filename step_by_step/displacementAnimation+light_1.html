@@ -30,10 +30,11 @@
             vUv = position; 
             vOpacity = vertexDisplacement; 
             vec3 p =position; 
-
-            p.x += sin(vertexDisplacement/50.0) * 100.0;
+            p.x += sin(vertexDisplacement/50.0) *70.0;
+            p.y += sin(vertexDisplacement/50.0) *70.0;
+             p.z += sin(vertexDisplacement/50.0) *70.0;
             vec4 modelViewPosition = modelViewMatrix * vec4(p, 1.0);
-            gl_Position = projectionMatrix * modelViewPosition;
+             gl_Position = projectionMatrix * modelViewPosition;
         }
 </script>
     <script type="x-shader/x-fragment" id="fragmentShader">
@@ -43,8 +44,8 @@
 
         void main() {
             float r = 1.0 - cos(vUv.x + step);
-            float g = 1.0 - cos(vUv.x + step); 
-            float b = 1.0 - cos(vUv.x + step); 
+            float g = 1.0 - cos(vUv.y + step); 
+            float b = 1.0 - cos(vUv.z + step); 
             
 	        gl_FragColor = vec4(r, g, b, vOpacity);
         }
@@ -70,13 +71,33 @@
         scene = new THREE.Scene();
         //CAMERA
         camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 100, 10000);
-
+        camera.position.z = 300;
         // LIGHT
         var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
         var pointLight = new THREE.PointLight(0xffffff, 0.5);
         scene.add(pointLight);
 
+        //MORE LIGHTS
+        // var light = new THREE.DirectionalLight(0xdfebff, 1);
+        // light.position.set(50, 200, 100);
+        // light.position.multiplyScalar(1.3);
+
+        // light.castShadow = true;
+
+        // light.shadow.mapSize.width = 1024;
+        // light.shadow.mapSize.height = 1024;
+
+        // var d = 300;
+
+        // light.shadow.camera.left = -d;
+        // light.shadow.camera.right = d;
+        // light.shadow.camera.top = d;
+        // light.shadow.camera.bottom = -d;
+
+        // light.shadow.camera.far = 1000;
+
+        // scene.add(light);
         //UNIFORMS
         var uniforms = {
             step: {
@@ -113,6 +134,8 @@
         ground.position.y = -100;
         scene.add(ground);
 
+
+
         //VERTEX DISPLACMENT ATTRIBUTE
         var vertexDisplacement = new Float32Array(boxGeometry.attributes.position.count);
         for (var i = 0; i < vertexDisplacement.length; i++) {
@@ -122,14 +145,35 @@
 
         var step = 0;
 
-        function render() {
-            box.rotation.x += 0.01;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap;
+        var light = new THREE.SpotLight(0xffffff, .5, 2000);
+        light.position.y = 800;
+        light.taget = box;
+        light.castShadow = true;
+        light.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 3000));
+        light.shadow.bias = .0001;
+        light.shadow.mapSize.width = 2048 * 2;
+        light.shadow.mapSize.height = 2048 * 2;
 
-            step += 0.1;
+        scene.add(light);
+        //cube 
+        sphere.castShadow = true;
+        box.castShadow = true;
+        //plane
+        box.receiveShadow = true;
+        ground.receiveShadow = true;
+
+        function render() {
+
+            box.rotation.x += 0.01;
+            box.rotation.y += 0.01;
+            step += 0.0001;
             // box.material.uniforms.step.value = 0.5 + Math.sin(step);
             for (var i = 0; i < vertexDisplacement.length; i++) {
                 vertexDisplacement[i] = .5 + Math.sin(i * step);
             }
+
             box.geometry.attributes.vertexDisplacement.needsUpdate = true;
 
             requestAnimationFrame(render);

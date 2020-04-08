@@ -42,15 +42,30 @@
         camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 100, 10000);
 
         // LIGHT
+
+        //general environment lighting
         var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
-        var pointLight = new THREE.PointLight(0xffffff, 0.5);
+        var pointLight = new THREE.PointLight(0xffffff, 0.4);
         scene.add(pointLight);
+
+        // var pointLight = new THREE.PointLight(0x00fff, 0.5);
+        // scene.add(pointLight);
 
 
         //BASIC CUBE 
         var boxGeometry = new THREE.BoxBufferGeometry(150, 100, 100, 50, 50, 50);
-        var boxMaterial = new THREE.MeshStandardMaterial({color: 0x00ff00});
+        var boxMaterial = new THREE.MeshStandardMaterial({
+            color: 0xCCCCFF
+        });
+        // var boxMaterial = new THREE.MeshBasicMaterial({
+        //     color: 0x00ff00
+        // });
+        // var boxMaterial = new THREE.MeshLambertMaterial({
+        //     color: 0x00ff00
+        // });
+
+
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
 
         box.position.z = -1000;
@@ -60,6 +75,11 @@
         //BASIC SPHERE
         var sphereGeometry = new THREE.SphereBufferGeometry(50, 20, 20);
         var sphereMaterial = new THREE.MeshStandardMaterial();
+        // var sphereMaterial = new THREE.MeshNormalMaterial();
+        // var sphereMaterial = new THREE.MeshPhongMaterial();
+        // var sphereMaterial = new THREE.MeshPhysicalMaterial({
+        //     color: 0x00ffff,
+        // });
         var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
         sphere.position.z = -1000;
@@ -74,14 +94,17 @@
         ground.position.y = -100;
         scene.add(ground);
 
-        // // TARGET LIGHTS
         // // SUN LIGHT (DIRECTIONAL LIGHT)
-        var sunlight = new THREE.DirectionalLight(0xffffff, .1, 1000);
-        sunlight.target = box;
-        scene.add(sunlight);
+        // var sunlight = new THREE.DirectionalLight(0xffffff, .1, 1000);
+        // sunlight.target = box;
+        // scene.add(sunlight);
 
-        // // SPOTLIGHT(CONE POINT LIGHT)
-        // // colors defined are coming from the top of bottom 
+        // //hemisphere light, above and below color
+        // var hemisphereLight = new THREE.HemisphereLight(0xfffbbb, 0x000fff, 1);
+        // scene.add(hemisphereLight);
+
+        // SPOTLIGHT(CONE POINT LIGHT)
+        // colors defined are coming from the top of bottom 
         var spotlight = new THREE.SpotLight(0xffffff, 2.0, 1000);
         spotlight.target = box;
         scene.add(spotlight);
