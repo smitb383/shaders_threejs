@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brooke three.js+shaders_trial1</title>
+    <title>Basic Scene + Lighting</title>
     <style>
         body {
             margin: 0;
@@ -105,6 +105,7 @@
 
         // SPOTLIGHT(CONE POINT LIGHT)
         // colors defined are coming from the top of bottom 
+
         var spotlight = new THREE.SpotLight(0xffffff, 2.0, 1000);
         spotlight.target = box;
         scene.add(spotlight);
